@@ -42,8 +42,11 @@ SCRIPT_PATH = os.path.join(BIN_DIR, f"raydp-submit")
 SCRIPT_TARGET = os.path.join(TEMP_PATH, "bin")
 
 if len(JARS_PATH) == 0:
-    print("Can't find core module jars, you need to build the jars with 'mvn clean package'"
-          " under core directory first.", file=sys.stderr)
+    print(
+        "Can't find core module jars, you need to build the jars with 'mvn clean package'"
+        " under core directory first.",
+        file=sys.stderr,
+    )
     sys.exit(-1)
 
 # build the temp dir
@@ -52,7 +55,9 @@ try:
     os.mkdir(JARS_TARGET)
     os.mkdir(SCRIPT_TARGET)
 except:
-    print(f"Temp path for symlink to parent already exists {TEMP_PATH}", file=sys.stderr)
+    print(
+        f"Temp path for symlink to parent already exists {TEMP_PATH}", file=sys.stderr
+    )
     sys.exit(-1)
 
 
@@ -62,9 +67,10 @@ class CustomBuildPackageProtos(Command):
     Copied from grpc_tools.command.BuildPackageProtos and change the proto root dir.
     """
 
-    description = 'build grpc protobuf modules'
-    user_options = [('strict-mode', 's',
-                     'exit with non-zero value if the proto compiling fails.')]
+    description = "build grpc protobuf modules"
+    user_options = [
+        ("strict-mode", "s", "exit with non-zero value if the proto compiling fails.")
+    ]
 
     def initialize_options(self):
         self.strict_mode = False
@@ -77,8 +83,9 @@ class CustomBuildPackageProtos(Command):
         # directory is provided as an 'include' directory. We assume it's the '' key
         # to `self.distribution.package_dir` (and get a key error if it's not
         # there).
-        build_package_protos(self.distribution.package_dir["mpi_network_proto"],
-                             self.strict_mode)
+        build_package_protos(
+            self.distribution.package_dir["mpi_network_proto"], self.strict_mode
+        )
 
 
 try:
@@ -95,7 +102,7 @@ try:
         "ray >= 2.1.0",
         "pyspark >= 3.1.1, <=3.5.4",
         "netifaces",
-        "protobuf > 3.19.5, <= 3.20.3"
+        "protobuf > 3.19.5",
     ]
 
     _packages = find_packages()
@@ -112,27 +119,29 @@ try:
         keywords="raydp spark ray distributed data-processing",
         description="RayDP: Distributed Data Processing on Ray",
         long_description=io.open(
-            os.path.join(ROOT_DIR, os.path.pardir, "README.md"),
-            "r",
-            encoding="utf-8").read(),
+            os.path.join(ROOT_DIR, os.path.pardir, "README.md"), "r", encoding="utf-8"
+        ).read(),
         long_description_content_type="text/markdown",
         packages=_packages,
         include_package_data=True,
-        package_dir={"raydp.jars": "deps/jars", "raydp.bin": "deps/bin",
-                     "mpi_network_proto": "raydp/mpi/network"},
+        package_dir={
+            "raydp.jars": "deps/jars",
+            "raydp.bin": "deps/bin",
+            "mpi_network_proto": "raydp/mpi/network",
+        },
         package_data={"raydp.jars": ["*.jar"], "raydp.bin": ["raydp-submit"]},
         cmdclass={
-            'build_proto_modules': CustomBuildPackageProtos,
+            "build_proto_modules": CustomBuildPackageProtos,
         },
         install_requires=install_requires,
         setup_requires=["grpcio-tools"],
-        python_requires='>=3.6',
+        python_requires=">=3.6",
         classifiers=[
-            'License :: OSI Approved :: Apache Software License',
-            'Programming Language :: Python :: 3.8',
-            'Programming Language :: Python :: 3.9',
-            'Programming Language :: Python :: 3.10',
-        ]
+            "License :: OSI Approved :: Apache Software License",
+            "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
+            "Programming Language :: Python :: 3.10",
+        ],
     )
 finally:
     rmtree(os.path.join(TEMP_PATH, "jars"))
